@@ -2,57 +2,95 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chemistry Quiz (1–30 Elements)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      text-align: center;
-      padding: 40px;
+      background: #e0f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
+
     .container {
-      background: white;
-      max-width: 600px;
-      margin: auto;
+      flex: 1;
       padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      background: #ffffff;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
+
     h1 {
+      font-size: 1.8em;
       margin-bottom: 10px;
     }
-    .question {
-      font-size: 1.5em;
-      margin-bottom: 20px;
+
+    .score, .timer {
+      font-size: 1.1em;
+      margin: 10px 0;
+      color: #00796b;
     }
+
+    .question {
+      font-size: 1.3em;
+      margin: 20px 0;
+    }
+
     .options button {
       display: block;
-      margin: 10px auto;
-      padding: 10px;
-      font-size: 1em;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 60%;
-      background-color: #e0f0ff;
-      border: 1px solid #ccc;
-    }
-    .options button:hover {
-      background-color: #cbe5ff;
-    }
-    .timer, .score {
-      font-size: 1.2em;
+      width: 100%;
       margin: 10px 0;
+      padding: 12px;
+      font-size: 1.1em;
+      border-radius: 8px;
+      background-color: #e1f5fe;
+      border: 1px solid #b3e5fc;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #b3e5fc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      font-size: 1em;
+      background: #00796b;
+      color: white;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 500px) {
+      .question {
+        font-size: 1.1em;
+      }
+
+      .options button {
+        font-size: 1em;
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Chemistry Quiz (Elements 1–30)</h1>
+    <h1>Chemistry Quiz (1–30)</h1>
     <div class="score" id="score">Score: 0 / 0</div>
     <div class="timer" id="timer">Time left: 5</div>
     <div class="question" id="question">Loading...</div>
     <div class="options" id="options"></div>
   </div>
+
+  <footer>
+    Presented by: K.G.Srisanth
+  </footer>
 
   <script>
     const elements = [
@@ -74,7 +112,7 @@
 
     function loadQuestion() {
       if (totalQuestions >= maxQuestions) {
-        document.getElementById('question').innerHTML = "✅ Quiz Completed!";
+        document.getElementById('question').innerHTML = "🎉 Quiz Completed!";
         document.getElementById('options').innerHTML = "";
         document.getElementById('timer').style.display = "none";
         return;
@@ -93,7 +131,7 @@
         const correctIndex = Math.floor(Math.random() * 30);
         const elementName = elements[correctIndex];
         currentAnswer = correctIndex + 1;
-        questionText = `What is the atomic number of "${elementName}"?`;
+        questionText = `What is the atomic number of "<strong>${elementName}</strong>"?`;
 
         choices.push(currentAnswer);
         while (choices.length < 4) {
@@ -105,7 +143,7 @@
         const atomicNumber = correctIndex + 1;
         const correctElement = elements[correctIndex];
         currentAnswer = correctElement;
-        questionText = `Which element has atomic number ${atomicNumber}?`;
+        questionText = `Which element has atomic number <strong>${atomicNumber}</strong>?`;
 
         choices.push(correctElement);
         while (choices.length < 4) {
@@ -115,7 +153,7 @@
       }
 
       choices = shuffleArray(choices);
-      document.getElementById("question").innerText = questionText;
+      document.getElementById("question").innerHTML = questionText;
 
       const optionsDiv = document.getElementById("options");
       optionsDiv.innerHTML = "";
