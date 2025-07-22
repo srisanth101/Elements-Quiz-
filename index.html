@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chemistry Quiz (1–30 Elements)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      text-align: center;
+      padding: 40px;
+    }
+    .container {
+      background: white;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .question {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    .options button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 60%;
+      background-color: #e0f0ff;
+      border: 1px solid #ccc;
+    }
+    .options button:hover {
+      background-color: #cbe5ff;
+    }
+    .timer, .score {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Chemistry Quiz (Elements 1–30)</h1>
+    <div class="score" id="score">Score: 0 / 0</div>
+    <div class="timer" id="timer">Time left: 5</div>
+    <div class="question" id="question">Loading...</div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <script>
+    const elements = [
+      "Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon", "Nitrogen", "Oxygen", "Fluorine", "Neon",
+      "Sodium", "Magnesium", "Aluminium", "Silicon", "Phosphorus", "Sulfur", "Chlorine", "Argon", "Potassium", "Calcium",
+      "Scandium", "Titanium", "Vanadium", "Chromium", "Manganese", "Iron", "Cobalt", "Nickel", "Copper", "Zinc"
+    ];
+
+    let score = 0;
+    let totalQuestions = 0;
+    const maxQuestions = 100;
+    let currentAnswer = '';
+    let timer;
+    let timeLeft = 5;
+
+    function shuffleArray(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+
+    function loadQuestion() {
+      if (totalQuestions >= maxQuestions) {
+        document.getElementById('question').innerHTML = "✅ Quiz Completed!";
+        document.getElementById('options').innerHTML = "";
+        document.getElementById('timer').style.display = "none";
+        return;
+      }
+
+      totalQuestions++;
+      timeLeft = 5;
+      document.getElementById("score").innerText = `Score: ${score} / ${totalQuestions - 1}`;
+      document.getElementById("timer").innerText = `Time left: ${timeLeft}`;
+
+      const questionType = Math.random() < 0.5 ? "name-to-number" : "number-to-name";
+      let questionText = "";
+      let choices = [];
+
+      if (questionType === "name-to-number") {
+        const correctIndex = Math.floor(Math.random() * 30);
+        const elementName = elements[correctIndex];
+        currentAnswer = correctIndex + 1;
+        questionText = `What is the atomic number of "${elementName}"?`;
+
+        choices.push(currentAnswer);
+        while (choices.length < 4) {
+          const rand = Math.floor(Math.random() * 30) + 1;
+          if (!choices.includes(rand)) choices.push(rand);
+        }
+      } else {
+        const correctIndex = Math.floor(Math.random() * 30);
+        const atomicNumber = correctIndex + 1;
+        const correctElement = elements[correctIndex];
+        currentAnswer = correctElement;
+        questionText = `Which element has atomic number ${atomicNumber}?`;
+
+        choices.push(correctElement);
+        while (choices.length < 4) {
+          const rand = elements[Math.floor(Math.random() * 30)];
+          if (!choices.includes(rand)) choices.push(rand);
+        }
+      }
+
+      choices = shuffleArray(choices);
+      document.getElementById("question").innerText = questionText;
+
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.innerText = choice;
+        btn.onclick = () => checkAnswer(choice);
+        optionsDiv.appendChild(btn);
+      });
+
+      clearInterval(timer);
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = `Time left: ${timeLeft}`;
+        if (timeLeft === 0) {
+          clearInterval(timer);
+          checkAnswer(null); // timeout
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(selected) {
+      clearInterval(timer);
+      if (selected == currentAnswer) {
+        score++;
+        alert("✅ Correct!");
+      } else {
+        alert(`❌ Wrong! The correct answer was: ${currentAnswer}`);
+      }
+      loadQuestion();
+    }
+
+    window.onload = loadQuestion;
+  </script>
+</body>
+</html>
